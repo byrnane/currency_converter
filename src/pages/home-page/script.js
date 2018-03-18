@@ -33,6 +33,12 @@ export default {
                 return reg.test(key) || reg.test(value)
             })
         },
+        isEmptyCurrencies: function () {
+            return _.isEmpty(this.allCurrencies)
+        },
+        isEmptyRates: function () {
+            return _.isEmpty(this.currencyRates)
+        },
         baseAmount: {
             get: function () {
                 return _.round(this.defaultCurrencyAmount * this.currencyRates[this.selectedBaseCurrency], 2);
@@ -67,8 +73,9 @@ export default {
             })
         document.addEventListener('click', () => {
             this.searchCurrenciesRequest = ''
-            document.getElementById('basePopup').classList.remove('open')
-            document.getElementById('targetPopup').classList.remove('open')
+            for (let popup of document.querySelectorAll('.popup')) {
+                popup.classList.remove('open')
+            }
         })
     },
 
@@ -88,9 +95,6 @@ export default {
             let tmp = this.selectedBaseCurrency
             this.selectedBaseCurrency = this.selectedTargetCurrency
             this.selectedTargetCurrency = tmp
-            // let tmpAmount = this.baseAmount
-            // this.baseAmount = this.targetAmount
-            // this.targetAmount = tmpAmount
         },
     }
 
