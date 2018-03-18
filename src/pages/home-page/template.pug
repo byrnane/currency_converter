@@ -1,7 +1,7 @@
 .home-page
     h1.mainTitle Конвертер валют
     transition(name="fade")
-        .preloader(v-show="isEmptyCurrencies || isEmptyRates")
+        .preloader(v-show="isEmptyCurrencies || isEmptyRates || !isChartReady")
             .double-bounce1
             .double-bounce2
     transition(name="fade")
@@ -50,6 +50,8 @@
                                             span.text.name {{name}}
     transition(name="fade")
         .result(v-show="!isEmptyRates")
-            input.amount(type="text", v-model.number="baseAmount")
+            input.amount(type="text" v-model.number="baseAmount")
             span.equal =
-            input.amount(type="text", v-model.number="targetAmount")
+            input.amount(type="text" v-model.number="targetAmount")
+    transition(name="fade")
+        line-chart(v-show="isChartReady" :chart-data="chartDataCollection" :options="chartOptions" :width="840" :height="240")

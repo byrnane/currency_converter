@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-let token = `b7c3836f8d984f3ebd43c15cfd665940`
+let token = `f9774bebccdd429abbbbc01d634c0a6e`
 
 export default {
     getCurrencies(){
@@ -8,5 +8,8 @@ export default {
     },
     getCurrenciesRates(){
         return Vue.http.get(`https://openexchangerates.org/api/latest.json`, {params: {app_id: token}})
-    }
+    },
+    getHistoricalRates(date){
+        return Vue.http.get(`https://openexchangerates.org/api/historical/${date}.json`, {params: {app_id: token}})
+    },
 }

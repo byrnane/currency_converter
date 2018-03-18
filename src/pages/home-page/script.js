@@ -1,9 +1,14 @@
 import api from '../../api/'
 import _ from 'lodash'
+import moment from 'moment'
+import LineChart from '../../components/lineChart'
+import Vue from 'vue';
 
 export default {
 	name: 'home-page',
-
+    components: {
+        LineChart
+    },
 	data: function () {
 		return {
             allCurrencies: {},
@@ -23,6 +28,22 @@ export default {
                     opacity: 0.2,
                 },
             },
+            chartDataCollection: null,
+            chartOptions: {
+                responsive: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            maxTicksLimit: 6,
+                        }
+                    }]
+                }
+            },
+            chartStep: 30,
+            chartPoints: 10,
+            chartLabels: [],
+            historycalRates: [],
+            isChartReady: false,
         }
     },
 
@@ -41,7 +62,8 @@ export default {
         },
         baseAmount: {
             get: function () {
-                return _.round(this.defaultCurrencyAmount * this.currencyRates[this.selectedBaseCurrency], 2);
+                return _.round(this.defaultCurrencyAmount * this.currencyRates[this.selectedBaseCurrency], 2)
+                //return _.round(this.defaultCurrencyAmount * this.currencyRates[this.selectedBaseCurrency], 2).toString().split('').reverse().join('')
             },
             set: function (newValue) {
                 this.defaultCurrencyAmount = newValue / this.currencyRates[this.selectedBaseCurrency]
@@ -77,6 +99,23 @@ export default {
                 popup.classList.remove('open')
             }
         })
+        for (let i = this.chartPoints - 1; i >= 0; i--) {
+            let date = moment().subtract(this.chartStep * i, 'days').format('YYYY-MM-DD')
+            this.chartLabels.push(moment(date).format('DD.MM.YYYY'))
+            api.getHistoricalRates(date)
+                .then((response) => {
+                    this.historycalRates.push(response.data)
+                    if (this.historycalRates.length === this.chartPoints) {
+                        this.historycalRates.sort((a, b) => {
+                            return a.timestamp - b.timestamp
+                        })
+                        this.fillChartData()
+                        this.isChartReady = true
+                    }
+                }, (error) => {
+                    console.log(error)
+                })
+        }
     },
 
     methods: {
@@ -96,6 +135,32 @@ export default {
             this.selectedBaseCurrency = this.selectedTargetCurrency
             this.selectedTargetCurrency = tmp
         },
-    }
+        fillChartData () {
+            let data = []
+            for (let i = 0; i < this.chartPoints; i++) {
+                let value = 1 / this.historycalRates[i].rates[this.selectedBaseCurrency] * this.historycalRates[i].rates[this.selectedTargetCurrency]
+                data.push(_.round(value, 4))
+            }
+            this.chartDataCollection = {
+                labels: this.chartLabels,
+                datasets: [
+                    {
+                        label: `${this.selectedBaseCurrency}/${this.selectedTargetCurrency}`,
+                        backgroundColor: '#1abc9c',
+                        data: data,
+                    }
+                ]
+            }
+        },
+    },
+
+    watch: {
+        selectedBaseCurrency: function (n, o) {
+            this.fillChartData()
+        },
+        selectedTargetCurrency: function (n, o) {
+            this.fillChartData()
+        },
+    },
 
 };
