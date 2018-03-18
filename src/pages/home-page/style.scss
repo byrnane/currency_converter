@@ -68,9 +68,16 @@
                     top: 0;
                     left: 0;
                     right: 0;
+                    visibility: hidden;
+                    opacity: 0;
                     background-color: white;
                     box-shadow: 0 0 8px 0 rgba($color: #000000, $alpha: 0.2);
                     padding: 12px 0;
+                    transition: opacity .3s ease 0s;
+                    &.open{
+                        visibility: visible;
+                        opacity: 1;
+                    }
                     .controls{
                         display: flex;
                         justify-content: space-between;
@@ -111,6 +118,9 @@
                                 }
                                 .text{
                                     font-size: 18px;
+                                    &.id{
+                                        width: 44px;
+                                    }
                                     &.divider{
                                         margin: 0 12px;
                                     }
