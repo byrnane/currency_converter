@@ -54,7 +54,7 @@
                                             span.text.divider ·
                                             span.text.name {{name}}
             .result
-                input.amount(type="text" v-model.number="baseAmount")
+                input.amount(type="text" v-model="baseAmount")
                 span.equal =
-                input.amount(type="text" v-model.number="targetAmount")
+                input.amount(type="text" v-model="targetAmount")
             line-chart(:chart-data="chartDataCollection" :options="chartOptions" :width="840" :height="240")

@@ -57,18 +57,17 @@ export default {
         baseAmount: {
             get: function () {
                 return _.round(this.defaultCurrencyAmount * this.currencyRates[this.selectedBaseCurrency], 2)
-                //return _.round(this.defaultCurrencyAmount * this.currencyRates[this.selectedBaseCurrency], 2).toString().split('').reverse().join('')
             },
             set: function (newValue) {
-                this.defaultCurrencyAmount = newValue / this.currencyRates[this.selectedBaseCurrency]
+                this.defaultCurrencyAmount = newValue.toString().replace(/[^.0-9]/gim,'') / this.currencyRates[this.selectedBaseCurrency]
             }
         },
         targetAmount: {
             get: function () {
-                return _.round(this.defaultCurrencyAmount * this.currencyRates[this.selectedTargetCurrency], 2);
+                return _.round(this.defaultCurrencyAmount * this.currencyRates[this.selectedTargetCurrency], 2)
             },
             set: function (newValue) {
-                this.defaultCurrencyAmount = newValue / this.currencyRates[this.selectedTargetCurrency]
+                this.defaultCurrencyAmount = newValue.toString().replace(/[^.0-9]/gim,'') / this.currencyRates[this.selectedTargetCurrency]
             }
         },
     },
