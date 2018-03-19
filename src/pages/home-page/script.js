@@ -145,8 +145,8 @@ export default {
                 labels: this.chartLabels,
                 datasets: [
                     {
-                        label: `${this.selectedBaseCurrency}/${this.selectedTargetCurrency}`,
-                        backgroundColor: '#1abc9c',
+                        label: `${this.selectedBaseCurrency} · ${this.allCurrencies[this.selectedBaseCurrency]} / ${this.selectedTargetCurrency} · ${this.allCurrencies[this.selectedTargetCurrency]}`,
+                        backgroundColor: '#3498db',
                         data: data,
                     }
                 ]
