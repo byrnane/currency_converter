@@ -50,6 +50,27 @@
             animation-delay: -1.0s;
         }
     }
+    .error{
+        width: 600px;
+        .title{
+            font-size: 24px;
+            color: #c0392b;
+            margin-bottom: 20px;
+        }
+        .list{
+            margin-bottom: 32px;
+            .item{
+                list-style: circle;
+                color: #c23616;
+            }
+        }
+        .refresh{
+            font-size: 18px;
+            text-decoration: underline;
+            color: #2980b9;
+            cursor: pointer;
+        }
+    }
     .currencies{
         display: flex;
         justify-content: space-between;
