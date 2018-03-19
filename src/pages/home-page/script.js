@@ -18,16 +18,6 @@ export default {
             selectedTargetCurrency: 'RUB',
             searchCurrenciesRequest: '',
             defaultCurrencyAmount: 1,
-            scrollOptions: {
-                // vBar: {
-                //     background: '#34495e',
-                //     opacity: 0.5,
-                // },
-                // vRail: {
-                //     background: '#34495e',
-                //     opacity: 0.2,
-                // },
-            },
             chartDataCollection: null,
             chartOptions: {
                 responsive: false,
@@ -94,14 +84,18 @@ export default {
                 console.log(error)
             })
         document.addEventListener('click', () => {
+            this.closeAllPopups()
+        })
+
+        this.closeAllPopups = function () {
             this.searchCurrenciesRequest = ''
             for (let popup of document.querySelectorAll('.popup')) {
                 popup.classList.remove('open')
             }
-        })
+        }
 
         this.openSearchPopup = function (target, event) {
-            event.stopPropagation()
+            this.closeAllPopups()
             document.getElementById(target).classList.add('open')
         }
         this.closeSearchPopup = function (target) {
@@ -109,23 +103,23 @@ export default {
             document.getElementById(target).classList.remove('open')
         }
 
-        for (let i = this.chartPoints - 1; i >= 0; i--) {
-            let date = moment().subtract(this.chartStep * i, 'days').format('YYYY-MM-DD')
-            this.chartLabels.push(moment(date).format('DD.MM.YYYY'))
-            api.getHistoricalRates(date)
-                .then((response) => {
-                    this.historycalRates.push(response.data)
-                    if (this.historycalRates.length === this.chartPoints) {
-                        this.historycalRates.sort((a, b) => {
-                            return a.timestamp - b.timestamp
-                        })
-                        this.fillChartData()
-                        this.isChartReady = true
-                    }
-                }, (error) => {
-                    console.log(error)
-                })
-        }
+        // for (let i = this.chartPoints - 1; i >= 0; i--) {
+        //     let date = moment().subtract(this.chartStep * i, 'days').format('YYYY-MM-DD')
+        //     this.chartLabels.push(moment(date).format('DD.MM.YYYY'))
+        //     api.getHistoricalRates(date)
+        //         .then((response) => {
+        //             this.historycalRates.push(response.data)
+        //             if (this.historycalRates.length === this.chartPoints) {
+        //                 this.historycalRates.sort((a, b) => {
+        //                     return a.timestamp - b.timestamp
+        //                 })
+        //                 this.fillChartData()
+        //                 this.isChartReady = true
+        //             }
+        //         }, (error) => {
+        //             console.log(error)
+        //         })
+        // }
     },
 
     methods: {
