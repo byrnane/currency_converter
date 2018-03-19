@@ -151,50 +151,92 @@ export default {
         this.reloadPage = function (event) {
             document.location.reload(true)
         }
-    },
 
-    created () {
         //получение валют и рейтов из API
-        api.getCurrencies()
-            .then((response) => {
-                this.allCurrencies = _.clone(response.data)
-            }, (error) => {
-                console.log(error)
-                //ошибки складываются в массив и выводятся на странице
-                this.errors.push(error)
-            })
-        api.getCurrenciesRates()
-            .then((response) => {
-                this.defaultCurrencyRate = response.data.base
-                this.currencyRates = _.clone(response.data.rates)
-            }, (error) => {
-                console.log(error)
-                this.errors.push(error)
-            })
-
-        //получение исторических данных для построения графика
-        for (let i = this.chartPoints - 1; i >= 0; i--) {
-            //определяем дату для вызова нужного URL
-            let date = moment().subtract(this.chartStep * i, 'days').format('YYYY-MM-DD')
-            this.chartLabels.push(moment(date).format('DD.MM.YYYY'))
-            api.getHistoricalRates(date)
+        //список валют может браться из кэша
+        if (localStorage.getItem('currencies_cache')) {
+            this.allCurrencies = JSON.parse(localStorage.getItem('currencies_cache'))
+        } else {
+            api.getCurrencies()
                 .then((response) => {
-                    //заполняем массив в произвольном порядке
-                    this.historycalRates.push(response.data)
-                    //проверяем, заполнен ли массив
-                    if (this.historycalRates.length === this.chartPoints) {
-                        //если заполнен - сортируем его по timestamp
-                        this.historycalRates.sort((a, b) => {
-                            return a.timestamp - b.timestamp
-                        })
-                        //и заполняем данные для графика
-                        this.fillChartData()
-                        this.isChartReady = true
-                    }
+                    this.allCurrencies = _.clone(response.data)
+                    //кэширование списка валют
+                    localStorage.setItem('currencies_cache', JSON.stringify(this.allCurrencies))
                 }, (error) => {
                     console.log(error)
-                        this.errors.push(error)
+                    //ошибки складываются в массив и выводятся на странице
+                    this.errors.push(error)
                 })
+        }
+        //рейты не кэшируются по понятным причинам ;)
+        //шучу, на самом деле на бесплатном тарифе API они обновляются только раз в час
+        //и мы имеем timestamp последнего обновления
+        //так что их тоже закэшируем!
+        let _self = this
+        if (localStorage.getItem('rates_expires') && localStorage.getItem('rates_cache') && localStorage.getItem('rates_expires') > moment().utc().unix()) {
+            this.currencyRates = JSON.parse(localStorage.getItem('rates_cache'))
+            //запрос данных в начале следующего часа
+            setTimeout(() => {
+                getCurrencies(_self)
+                //следующая сложная и длинная строчка просто вычисляет, сколько ждать до начала следующего часа + 1 минута
+            }, (moment().utc().add(1, 'hours').startOf('hour').unix() - moment().utc().unix()) * 1000 + 60000)
+        } else {
+            getCurrencies(_self)
+        }
+
+        function getCurrencies (_self) {
+            api.getCurrenciesRates()
+                .then((response) => {
+                    _self.defaultCurrencyRate = response.data.base
+                    _self.currencyRates = _.clone(response.data.rates)
+                    //кэшируем рейты
+                    localStorage.setItem('rates_cache', JSON.stringify(_self.currencyRates))
+                    localStorage.setItem('rates_expires', moment.unix(response.data.timestamp).utc().add(1, 'hours').unix())
+                    //функция получения данных реккурсивно вызывает себя в начале следующего часа
+                    setTimeout(() => {
+                        getCurrencies(_self)
+                    }, (moment().utc().add(1, 'hours').startOf('hour').unix() - moment().utc().unix()) * 1000 + 60000)
+                }, (error) => {
+                    console.log(error)
+                    _self.errors.push(error)
+                })
+        }
+
+        //получение исторических данных для построения графика
+        //проверяем наличие данных в кэше и их актуальность
+        if (localStorage.getItem('historical_expires') && localStorage.getItem('historical_cache') && localStorage.getItem('historical_labels') && localStorage.getItem('historical_expires') > moment().utc().unix()) {
+            this.historycalRates = JSON.parse(localStorage.getItem('historical_cache'))
+            this.chartLabels = JSON.parse(localStorage.getItem('historical_labels'))
+            this.fillChartData()
+            this.isChartReady = true
+        } else {
+            for (let i = this.chartPoints - 1; i >= 0; i--) {
+                //определяем дату для вызова нужного URL
+                let date = moment().utc().subtract(this.chartStep * i, 'days').format('YYYY-MM-DD')
+                this.chartLabels.push(moment(date).format('DD.MM.YYYY'))
+                api.getHistoricalRates(date)
+                    .then((response) => {
+                        //заполняем массив в произвольном порядке
+                        this.historycalRates.push(response.data)
+                        //проверяем, заполнен ли массив
+                        if (this.historycalRates.length === this.chartPoints) {
+                            //если заполнен - сортируем его по timestamp
+                            this.historycalRates.sort((a, b) => {
+                                return a.timestamp - b.timestamp
+                            })
+                            //кэшируем до начала следующего дня
+                            localStorage.setItem('historical_expires', moment().utc().add(1, 'days').startOf('day').unix())
+                            localStorage.setItem('historical_cache', JSON.stringify(this.historycalRates))
+                            localStorage.setItem('historical_labels', JSON.stringify(this.chartLabels))
+                            //и заполняем данные для графика
+                            this.fillChartData()
+                            this.isChartReady = true
+                        }
+                    }, (error) => {
+                        console.log(error)
+                            this.errors.push(error)
+                    })
+            }
         }
     },
 };
