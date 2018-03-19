@@ -16,14 +16,7 @@ server.use('/dist', express.static(path.join(__dirname, './dist')));
 server.get('*', (req, res) => {
 
   bundle.default({ url: req.url }).then((app) => {
-    //context to use as data source
-    //in the template for interpolation
-    const context = {
-      title: 'Vue JS - Server Render',
-      meta: `
-        <meta description="vuejs server side render">
-      `
-    };
+    const context = {};
 
     renderer.renderToString(app, context, function (err, html) {
       if (err) {

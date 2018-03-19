@@ -74,22 +74,6 @@ export default {
     },
 
     mounted () {
-        api.getCurrencies()
-            .then((response) => {
-                this.allCurrencies = _.clone(response.data)
-            }, (error) => {
-                console.log(error)
-                this.errors.push(error)
-            })
-        api.getCurrenciesRates()
-            .then((response) => {
-                this.defaultCurrencyRate = response.data.base
-                this.currencyRates = _.clone(response.data.rates)
-            }, (error) => {
-                console.log(error)
-                this.errors.push(error)
-            })
-
         document.addEventListener('click', () => {
             this.closeAllPopups()
         })
@@ -113,6 +97,24 @@ export default {
         this.reloadPage = function (event) {
             document.location.reload(true)
         }
+    },
+
+    created () {
+        api.getCurrencies()
+            .then((response) => {
+                this.allCurrencies = _.clone(response.data)
+            }, (error) => {
+                console.log(error)
+                this.errors.push(error)
+            })
+        api.getCurrenciesRates()
+            .then((response) => {
+                this.defaultCurrencyRate = response.data.base
+                this.currencyRates = _.clone(response.data.rates)
+            }, (error) => {
+                console.log(error)
+                this.errors.push(error)
+            })
 
         for (let i = this.chartPoints - 1; i >= 0; i--) {
             let date = moment().subtract(this.chartStep * i, 'days').format('YYYY-MM-DD')
@@ -129,7 +131,7 @@ export default {
                     }
                 }, (error) => {
                     console.log(error)
-                       this.errors.push(error)
+                        this.errors.push(error)
                 })
         }
     },
