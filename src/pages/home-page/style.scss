@@ -142,6 +142,7 @@
                     }
                     .scroll{
                         height: 288px;
+                        overflow-y: scroll;
                         .list{
                             .item{
                                 display: flex;

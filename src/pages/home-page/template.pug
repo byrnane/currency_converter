@@ -19,13 +19,12 @@
                             input.search(type="text", placeholder="Поиск по валюте или стране..." v-model="searchCurrenciesRequest")
                             .close(v-on:click="closeSearchPopup('basePopup')")
                         .scroll
-                            vue-scroll(:ops="scrollOptions")
-                                .content
-                                    ul.list
-                                        li.item(v-for="(name, id) in searchedCurrencies" v-bind:title="name" v-on:click="selectedBaseCurrency = id; baseAmount = 1; closeSearchPopup('basePopup')")
-                                            span.text.id {{id}}
-                                            span.text.divider ·
-                                            span.text.name {{name}}
+                            .content
+                                ul.list
+                                    li.item(v-for="(name, id) in searchedCurrencies" v-bind:title="name" v-on:click="selectedBaseCurrency = id; baseAmount = 1; closeSearchPopup('basePopup')")
+                                        span.text.id {{id}}
+                                        span.text.divider ·
+                                        span.text.name {{name}}
             .swap(v-on:click="swapCurrencies")
                 img(src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU5Ljk5NyA1OS45OTciIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDU5Ljk5NyA1OS45OTc7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIyNHB4Ij4KPGc+Cgk8cGF0aCBkPSJNMy40MTMsMjQuNDk5aDM1LjU4NmMwLjU1MiwwLDEtMC40NDgsMS0xcy0wLjQ0OC0xLTEtMUgzLjQxM2wxMC4yOTMtMTAuMjkzYzAuMzkxLTAuMzkxLDAuMzkxLTEuMDIzLDAtMS40MTQgICBzLTEuMDIzLTAuMzkxLTEuNDE0LDBsLTEyLDEyYy0wLjA5MiwwLjA5Mi0wLjE2NSwwLjIwMy0wLjIxNiwwLjMyNWMtMC4xMDEsMC4yNDUtMC4xMDEsMC41MiwwLDAuNzY0ICAgYzAuMDUxLDAuMTIyLDAuMTI0LDAuMjMzLDAuMjE2LDAuMzI1bDEyLDEyYzAuMTk1LDAuMTk1LDAuNDUxLDAuMjkzLDAuNzA3LDAuMjkzczAuNTEyLTAuMDk4LDAuNzA3LTAuMjkzICAgYzAuMzkxLTAuMzkxLDAuMzkxLTEuMDIzLDAtMS40MTRMMy40MTMsMjQuNDk5eiIgZmlsbD0iI0ZGRkZGRiIvPgoJPHBhdGggZD0iTTU5LjkyMSwzNi44ODFjMC4xMDEtMC4yNDUsMC4xMDEtMC41MiwwLTAuNzY0Yy0wLjA1MS0wLjEyMi0wLjEyNC0wLjIzMy0wLjIxNi0wLjMyNWwtMTItMTIgICBjLTAuMzkxLTAuMzkxLTEuMDIzLTAuMzkxLTEuNDE0LDBzLTAuMzkxLDEuMDIzLDAsMS40MTRsMTAuMjkzLDEwLjI5M0gyMC45OTljLTAuNTUyLDAtMSwwLjQ0OC0xLDFzMC40NDgsMSwxLDFoMzUuNTg2ICAgTDQ2LjI5Miw0Ny43OTJjLTAuMzkxLDAuMzkxLTAuMzkxLDEuMDIzLDAsMS40MTRjMC4xOTUsMC4xOTUsMC40NTEsMC4yOTMsMC43MDcsMC4yOTNzMC41MTItMC4wOTgsMC43MDctMC4yOTNsMTItMTIgICBDNTkuNzk4LDM3LjExNCw1OS44NzEsMzcuMDAzLDU5LjkyMSwzNi44ODF6IiBmaWxsPSIjRkZGRkZGIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==")
             .select
@@ -41,13 +40,12 @@
                             input.search(type="text", placeholder="Поиск по валюте или стране..." v-model="searchCurrenciesRequest")
                             .close(v-on:click="closeSearchPopup('targetPopup')")
                         .scroll
-                            vue-scroll(:ops="scrollOptions")
-                                .content
-                                    ul.list
-                                        li.item(v-for="(name, id) in searchedCurrencies" v-bind:title="name" v-on:click="selectedTargetCurrency = id; closeSearchPopup('targetPopup')")
-                                            span.text.id {{id}}
-                                            span.text.divider ·
-                                            span.text.name {{name}}
+                            .content
+                                ul.list
+                                    li.item(v-for="(name, id) in searchedCurrencies" v-bind:title="name" v-on:click="selectedTargetCurrency = id; closeSearchPopup('targetPopup')")
+                                        span.text.id {{id}}
+                                        span.text.divider ·
+                                        span.text.name {{name}}
     transition(name="fade")
         .result(v-show="!isEmptyRates")
             input.amount(type="text" v-model.number="baseAmount")

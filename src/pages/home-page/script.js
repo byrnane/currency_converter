@@ -2,12 +2,12 @@ import api from '../../api/'
 import _ from 'lodash'
 import moment from 'moment'
 import LineChart from '../../components/lineChart'
-import Vue from 'vue';
+import Vue from 'vue'
 
 export default {
 	name: 'home-page',
     components: {
-        LineChart
+        LineChart,
     },
 	data: function () {
 		return {
@@ -19,14 +19,14 @@ export default {
             searchCurrenciesRequest: '',
             defaultCurrencyAmount: 1,
             scrollOptions: {
-                vBar: {
-                    background: '#34495e',
-                    opacity: 0.5,
-                },
-                vRail: {
-                    background: '#34495e',
-                    opacity: 0.2,
-                },
+                // vBar: {
+                //     background: '#34495e',
+                //     opacity: 0.5,
+                // },
+                // vRail: {
+                //     background: '#34495e',
+                //     opacity: 0.2,
+                // },
             },
             chartDataCollection: null,
             chartOptions: {
@@ -79,7 +79,7 @@ export default {
         },
     },
 
-    created () {
+    mounted () {
         api.getCurrencies()
             .then((response) => {
                 this.allCurrencies = _.clone(response.data)
@@ -99,6 +99,16 @@ export default {
                 popup.classList.remove('open')
             }
         })
+
+        this.openSearchPopup = function (target, event) {
+            event.stopPropagation()
+            document.getElementById(target).classList.add('open')
+        }
+        this.closeSearchPopup = function (target) {
+            this.searchCurrenciesRequest = ''
+            document.getElementById(target).classList.remove('open')
+        }
+
         for (let i = this.chartPoints - 1; i >= 0; i--) {
             let date = moment().subtract(this.chartStep * i, 'days').format('YYYY-MM-DD')
             this.chartLabels.push(moment(date).format('DD.MM.YYYY'))
@@ -119,14 +129,6 @@ export default {
     },
 
     methods: {
-        openSearchPopup: function (target, event) {
-            event.stopPropagation()
-            document.getElementById(target).classList.add('open')
-        },
-        closeSearchPopup: function (target) {
-            this.searchCurrenciesRequest = ''
-            document.getElementById(target).classList.remove('open')
-        },
         popupClickHandler: function (event) {
             event.stopPropagation()
         },
