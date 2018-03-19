@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-let token = `cd60ca4021274268b35c15fbc7855ec6`
+let token = `18162d42621246e599db4534ba76721d`
 
 export default {
     getCurrencies(){
